@@ -1,0 +1,54 @@
+# Katalog Produk Warung
+
+Katalog produk online untuk pemilik warung atau toko kecil. Pelanggan bisa melihat barang yang tersedia dan harganya dari HP, lalu memesan lewat WhatsApp — tanpa harus tanya-tanya dulu.
+
+## Siapa penggunanya
+
+Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjawab pertanyaan "ada apa saja?" dan "harganya berapa?" satu per satu; pelanggan bisa langsung memilih dari katalog, lalu pesanan masuk rapi lewat WhatsApp.
+
+## Fitur
+
+- [x] Tahap 1: Kerangka aplikasi dan katalog produk (daftar barang yang masih tersedia, saringan kategori)
+- [ ] Tahap 2: Detail produk dan keranjang belanja
+- [ ] Tahap 3: Pesan via WhatsApp (link wa.me dengan isi pesanan otomatis)
+- [ ] Tahap 4: Pencarian dan filter kategori
+- [ ] Tahap 5: Tampilan rapi di HP
+- [ ] Tahap 6: Deploy online
+
+## Teknologi yang dipakai
+
+- Node.js dan Express.js — server dan REST API
+- MySQL — basis data produk (tabel yang sama dengan aplikasi kasir warung)
+- HTML5, CSS3, dan JavaScript — tampilan dan interaksi di peramban
+- Fetch API — mengambil data dari server
+
+## Cara menjalankan
+
+1. Salin berkas `.env.example` menjadi `.env`, lalu isi pengaturannya:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Buat basis data dari berkas `database/schema.sql` di MySQL.
+3. Pasang paket yang dibutuhkan:
+
+   ```bash
+   npm install
+   ```
+
+4. Jalankan server:
+
+   ```bash
+   npm start
+   ```
+
+5. Buka di peramban: http://localhost:3000
+
+## Demo
+
+Belum ter-deploy. Tautan demo akan ditulis di sini setelah tahap deploy selesai.
+
+## Kemajuan
+
+Lihat `PROGRESS.md` untuk catatan tiap tahap: apa yang sudah selesai, apa yang belum, dan apa tahap berikutnya.

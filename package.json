@@ -1,0 +1,1 @@
+{"dependencies":{"dotenv":"^16.4.5","express":"^4.19.2","mysql2":"^3.10.1"},"description":"Katalog produk warung dengan pemesanan via WhatsApp","main":"server.js","name":"katalog-produk-warung","scripts":{"dev":"node server.js","start":"node server.js"},"version":"0.1.0"}

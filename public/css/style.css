@@ -1,0 +1,108 @@
+/* Tampilan dasar: rapi di layar HP dan laptop, warna tenang untuk warung. */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f4f1ea;
+  color: #222;
+}
+
+.wadah {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h1 { margin: 0 0 8px; }
+h2 { margin: 0 0 12px; }
+
+.keterangan { color: #555; }
+
+.kartu {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.pesan { color: #9a3b26; }
+
+/* Tombol saringan kategori: gampang diketuk di HP (tinggi minimal 44px). */
+.saringan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tombol-saring {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tombol-saring.aktif {
+  background: #2e6b34;
+  border-color: #2e6b34;
+  color: #fff;
+}
+
+/* Kartu produk: satu kolom di HP, dua kolom di layar lebar. */
+.grid-produk {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.kartu-produk {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.kartu-produk h2 {
+  margin: 0 0 4px;
+  font-size: 1.1em;
+}
+
+.kartu-produk .harga {
+  margin: 0 0 4px;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #2e6b34;
+}
+
+.kartu-produk .stok {
+  margin: 0;
+  color: #555;
+}
+
+.kartu-produk .kategori {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef3e6;
+  color: #2e6b34;
+  font-size: 0.85em;
+}
+
+/* Layar agak lebar: dua kartu berdampingan. */
+@media (min-width: 600px) {
+  .grid-produk {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Layar kecil: ruang tepi lebih hemat, judul lebih kecil. */
+@media (max-width: 600px) {
+  .wadah { padding: 16px 12px; }
+  h1 { font-size: 1.4em; }
+  .kartu { padding: 12px; }
+}
