@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="wadah">
-    <p><a class="tautan-kembali" href="/">← Kembali ke katalog</a></p>
+    <p><a class="tautan-kembali" href="/">← Kembali ke katalog</a> · <a class="tautan-keranjang" href="/keranjang.html">Keranjang<span data-lencana-keranjang></span></a></p>
 
     <div class="kartu">
       <p id="pesan" class="pesan"></p>
@@ -17,11 +17,18 @@
         <p class="harga-besar" id="detail-harga"></p>
         <p id="detail-stok"></p>
         <span class="kategori" id="detail-kategori" hidden></span>
-        <p class="keterangan">Keranjang belanja dan pesan via WhatsApp menyusul di tahap berikutnya.</p>
+        <div class="beli">
+          <label for="jumlah-beli">Jumlah</label>
+          <input id="jumlah-beli" type="number" min="1" value="1">
+          <button id="tambah-keranjang" type="button">+ Keranjang</button>
+        </div>
+        <p id="info-keranjang" class="info"></p>
+        <p class="keterangan">Pesan via WhatsApp menyusul di tahap berikutnya.</p>
       </div>
     </div>
   </div>
 
+  <script src="/js/keranjang.js"></script>
   <script src="/js/detail.js"></script>
 </body>
 </html>

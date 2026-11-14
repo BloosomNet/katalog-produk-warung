@@ -9,7 +9,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 ## Fitur
 
 - [x] Tahap 1: Kerangka aplikasi dan katalog produk (daftar barang yang masih tersedia, saringan kategori)
-- [ ] Tahap 2: Detail produk dan keranjang belanja (halaman detail sudah jadi, keranjang menyusul)
+- [x] Tahap 2: Detail produk dan keranjang belanja (halaman detail, keranjang tersimpan di Local Storage)
 - [ ] Tahap 3: Pesan via WhatsApp (link wa.me dengan isi pesanan otomatis)
 - [ ] Tahap 4: Pencarian dan filter kategori
 - [ ] Tahap 5: Tampilan rapi di HP

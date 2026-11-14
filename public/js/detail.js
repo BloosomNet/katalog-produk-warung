@@ -2,6 +2,11 @@
 // lalu meminta detail produk itu ke server dan menampilkannya.
 const pesanEl = document.getElementById('pesan');
 const detailEl = document.getElementById('detail-produk');
+const jumlahInput = document.getElementById('jumlah-beli');
+const infoKeranjangEl = document.getElementById('info-keranjang');
+
+// Produk yang sedang ditampilkan — dipakai saat tombol keranjang diketuk.
+let produkSekarang = null;
 
 // Mengubah angka menjadi format rupiah, misalnya 5000 menjadi Rp5.000.
 function formatRupiah(angka) {
@@ -28,6 +33,11 @@ async function muatDetail() {
     document.getElementById('detail-harga').textContent = formatRupiah(produk.harga);
     document.getElementById('detail-stok').textContent = 'Stok tersedia: ' + produk.stok;
 
+    // Simpan produknya dan batasi jumlah beli maksimal setinggi stok.
+    produkSekarang = produk;
+    jumlahInput.max = produk.stok;
+    jumlahInput.value = 1;
+
     const kategoriEl = document.getElementById('detail-kategori');
     if (produk.kategori) {
       kategoriEl.textContent = produk.kategori;
@@ -42,3 +52,12 @@ async function muatDetail() {
 }
 
 muatDetail();
+
+// Tombol "+ Keranjang": memasukkan produk ini ke keranjang sesuai jumlah
+// yang ditulis, lalu memberi tahu pelanggan lewat baris info di bawahnya.
+document.getElementById('tambah-keranjang').addEventListener('click', () => {
+  if (!produkSekarang) return;
+  const jumlah = Number(jumlahInput.value) || 1;
+  tambahKeKeranjang(produkSekarang, jumlah);
+  infoKeranjangEl.textContent = 'Masuk keranjang. Cek isinya lewat tautan Keranjang di atas, atau lanjut belanja dulu.';
+});

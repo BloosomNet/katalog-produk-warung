@@ -52,9 +52,35 @@ Yang sudah diuji (basis data MariaDB/MySQL lokal, server di port 3001):
 - Catatan soal pengujian: MariaDB di mesin ini masih baru — pengguna `kasir` yang tertulis di `.env` belum ada, jadi server sempat gagal konek (`Access denied for user 'kasir'`). Pengujian akhirnya memakai pengguna sementara `katalog_uji` lewat variabel environment, tanpa mengubah `.env`. Setelah pengujian, data uji dihapus (tabel kembali kosong) dan pengguna sementara ikut dihapus. Jadi kalau Farid menjalankan dari mesin baru, buat dulu pengguna basis datanya seperti langkah baru di README.
 - Data uji dibersihkan, tabel kembali kosong
 
+Kekurangan saat Tahap 2 potongan 1 selesai (sebagian sudah beres di bawah):
+- Keranjang belanja sudah dibuat di potongan 2 (di bawah).
+- Belum ada pemesanan via WhatsApp — itu Tahap 3.
+- Belum ada kolom pencarian — itu Tahap 4.
+- Belum ter-deploy.
+
+## Tahap 2 (potongan 2 — selesai): Keranjang belanja
+
+Yang dibuat kali ini:
+- Logika keranjang di `public/js/keranjang.js`: tambah produk, ubah jumlah, hapus per barang, kosongkan semua, total harga dan total barang. Isinya disimpan di Local Storage (`keranjang_katalog`), jadi tetap ada walau pelanggan pindah halaman. Jumlah beli dibatasi setinggi stok — tidak bisa beli lebih dari yang ada.
+- Halaman keranjang di `public/keranjang.html`: daftar barang yang dibeli, tombol kurang/tambah jumlah, hapus per barang, total harga, dan tombol kosongkan keranjang. Kalau masih kosong, muncul pesan yang mengarahkan balik ke katalog.
+- Halaman detail (`public/detail.html` + `public/js/detail.js`): ada kolom jumlah dan tombol "+ Keranjang" di bawah harga. Jumlah maksimal ikut stok produk itu, dan setelah diketuk muncul baris info "Masuk keranjang".
+- Tautan "Keranjang" di kepala halaman katalog dan detail, lengkap dengan lencana jumlah barang — angkanya ikut berubah tiap keranjang berubah.
+- Gaya tambahan di `public/css/style.css`: tombol keranjang hijau, baris barang di keranjang, tombol kurang/tambah 44px supaya gampang diketuk di HP.
+- Tidak ada perubahan di server — keranjang murni di peramban, jadi endpointnya tetap sama seperti Tahap 1.
+
+Cara kerja singkat:
+- Pelanggan mengetuk "+ Keranjang" di halaman detail, produk itu masuk Local Storage. Pindah ke `/keranjang.html` untuk melihat isinya, mengubah jumlah, atau menghapus barang. Total harga dihitung ulang tiap ada perubahan.
+
+Yang sudah diuji:
+- Logika keranjang diuji lewat Node dengan tiruan Local Storage (10 pemeriksaan, semua lolos): tambah barang, tambah barang yang sama (jumlahnya menumpuk), jumlah mentok di stok, ubah jumlah jadi 0 (barang hilang), hapus barang, kosongkan, isi keranjang tetap ada setelah "muat ulang", total harga benar.
+- Server diuji di port 3001 dengan basis data MariaDB/MySQL lokal dan pengguna sementara (data uji sama seperti sebelumnya: Kopi Sachet Rp5.000 stok 20, Gula 1kg Rp17.000 stok 10, Teh Melati Rp4.000 stok 0): `GET /api/produk` tetap mengembalikan 2 produk, `/api/produk/1` benar, `/3` tetap 404.
+- Halaman `/`, `/detail.html`, `/keranjang.html`, `/js/keranjang.js`, `/js/detail.js`, `/js/app.js`, dan `/css/style.css` dimuat HTTP 200; `keranjang.html` berisi daftar keranjang dan total, `detail.html` berisi kolom jumlah dan tombol keranjang, halaman katalog berisi tautan keranjang dengan lencana jumlah.
+- Catatan soal pengujian: MariaDB di mesin ini masih baru — pengguna `kasir` yang tertulis di `.env` belum ada, jadi pengujian memakai pengguna sementara `katalog_uji` lewat variabel environment, tanpa mengubah `.env`. Setelah pengujian, basis data uji dan pengguna sementara ikut dihapus, jadi mesin kembali seperti sebelum pengujian. Kalau Farid menjalankan dari mesin baru, buat dulu pengguna basis datanya seperti langkah di README.
+- Data uji dibersihkan, tabel kembali kosong
+
 Kekurangan saat ini (jujur):
-- Belum ada keranjang belanja dan belum ada pemesanan via WhatsApp — itu lanjutan Tahap 2 dan Tahap 3.
-- Halaman detail belum ada tombol "tambah ke keranjang" — tombol itu ikut potongan keranjang.
+- Belum ada pemesanan via WhatsApp — itu Tahap 3, tombol pesannya belum ada di halaman keranjang.
+- Harga dan stok di keranjang memakai salinan saat produk dimasukkan — kalau stok berubah di warung setelah itu, keranjang belum tahu. Nanti dicek ulang saat pesan via WhatsApp dibuat.
 - Belum ada kolom pencarian — itu Tahap 4.
 - Belum ter-deploy.
 
@@ -69,4 +95,4 @@ Project ini dirancang supaya nanti bisa digabung dengan aplikasi kasir warung da
 
 ## Tahap berikutnya
 
-Tahap 2 (lanjutan): Keranjang belanja — pelanggan bisa menambah produk dari halaman detail, isi keranjang disimpan di Local Storage, lalu tampil jumlah dan total harga.
+Tahap 3: Pesan via WhatsApp — tombol pesan di halaman keranjang yang membuka link wa.me dengan isi pesanan (daftar barang, jumlah, dan total) terisi otomatis. Nomor WhatsApp warung dibaca dari `.env`.
