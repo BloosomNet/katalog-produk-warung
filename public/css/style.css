@@ -64,6 +64,41 @@ h2 { margin: 0 0 12px; }
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 16px;
+  cursor: pointer;
+}
+
+.kartu-produk:hover {
+  border-color: #2e6b34;
+}
+
+.tautan-detail {
+  display: inline-block;
+  margin-top: 10px;
+  color: #2e6b34;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Halaman detail produk. */
+.tautan-kembali {
+  color: #2e6b34;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#detail-produk h1 {
+  font-size: 1.5em;
+}
+
+.harga-besar {
+  margin: 0 0 8px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #2e6b34;
+}
+
+#detail-produk .kategori {
+  margin-top: 4px;
 }
 
 .kartu-produk h2 {

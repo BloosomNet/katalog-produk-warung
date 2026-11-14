@@ -9,7 +9,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 ## Fitur
 
 - [x] Tahap 1: Kerangka aplikasi dan katalog produk (daftar barang yang masih tersedia, saringan kategori)
-- [ ] Tahap 2: Detail produk dan keranjang belanja
+- [ ] Tahap 2: Detail produk dan keranjang belanja (halaman detail sudah jadi, keranjang menyusul)
 - [ ] Tahap 3: Pesan via WhatsApp (link wa.me dengan isi pesanan otomatis)
 - [ ] Tahap 4: Pencarian dan filter kategori
 - [ ] Tahap 5: Tampilan rapi di HP
@@ -31,19 +31,26 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
    ```
 
 2. Buat basis data dari berkas `database/schema.sql` di MySQL.
-3. Pasang paket yang dibutuhkan:
+3. Buat pengguna basis data yang sama dengan isi `.env` (misalnya pengguna `kasir` dengan kata sandi yang kamu tulis di `.env`):
+
+   ```sql
+   CREATE USER 'kasir'@'localhost' IDENTIFIED BY 'kata-sandi-di-.env';
+   GRANT ALL PRIVILEGES ON katalog_warung.* TO 'kasir'@'localhost';
+   ```
+
+4. Pasang paket yang dibutuhkan:
 
    ```bash
    npm install
    ```
 
-4. Jalankan server:
+5. Jalankan server:
 
    ```bash
    npm start
    ```
 
-5. Buka di peramban: http://localhost:3000
+6. Buka di peramban: http://localhost:3000
 
 ## Demo
 

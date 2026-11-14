@@ -35,6 +35,17 @@ function buatKartuProduk(produk) {
     kartu.append(label);
   }
 
+  // Mengetuk kartu membuka halaman detail produk itu.
+  const tautan = document.createElement('a');
+  tautan.className = 'tautan-detail';
+  tautan.href = '/detail.html?id=' + produk.id;
+  tautan.textContent = 'Lihat detail →';
+  kartu.append(tautan);
+
+  kartu.addEventListener('click', () => {
+    window.location.href = '/detail.html?id=' + produk.id;
+  });
+
   return kartu;
 }
 

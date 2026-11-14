@@ -25,12 +25,38 @@ Yang sudah diuji (basis data MariaDB/MySQL lokal):
 - Halaman `/`, `/css/style.css`, dan `/js/app.js` dimuat HTTP 200, tombol saringan dan kartu produk tampil, tidak ada error di log server
 - Data uji dibersihkan, tabel kembali kosong
 
-Kekurangan saat ini (jujur):
-- Belum ada halaman detail produk yang bisa dibuka dari kartu (endpoint sudah ada, halamannya belum) — itu Tahap 2.
+Kekurangan saat Tahap 1 selesai (sebagian sudah beres di bawah):
+- Halaman detail produk sudah dibuat di Tahap 2 potongan 1 (di bawah).
 - Belum ada keranjang belanja dan belum ada pemesanan via WhatsApp — itu Tahap 2 dan 3.
 - Belum ada kolom pencarian — itu Tahap 4.
 - Belum ter-deploy.
-- Catatan: repo GitHub `BloosomNet/katalog-produk-warung` belum ada (pembuatan repo lewat API pernah gagal 403), jadi kode Tahap 1 ini baru tersimpan lokal. Repo perlu dibuat dulu lewat peramban sebelum bisa di-push.
+- Catatan: repo GitHub sudah dibuat Rid 2026-11-14 dan Tahap 1 sudah ter-push (commit 9540c264).
+
+## Tahap 2 (potongan 1 — selesai): Halaman detail produk
+
+Yang dibuat kali ini:
+- Halaman detail di `public/detail.html` + `public/js/detail.js`: membaca `?id=` dari alamat, meminta `GET /api/produk/:id`, lalu menampilkan nama, harga rupiah, stok, dan label kategori. Judul tab ikut berubah jadi nama produk.
+- Kartu produk di katalog sekarang bisa diketuk — mengetuk kartu atau tautan "Lihat detail →" membuka halaman detail produk itu (`public/js/app.js`).
+- Gaya tambahan di `public/css/style.css`: kartu berubah warna tepi saat disorot, tautan detail hijau tebal, dan tampilan harga besar di halaman detail.
+- Endpoint detailnya sendiri (`GET /api/produk/:id`) sudah ada sejak Tahap 1, jadi tidak ada perubahan di server — potongan ini murni halaman dan interaksi.
+- README diperbarui: langkah membuat pengguna basis data (`CREATE USER` + `GRANT`) ditambahkan di "Cara menjalankan", karena di mesin baru pengguna `kasir` dari `.env` belum tentu sudah ada.
+
+Cara kerja singkat:
+- Pelanggan mengetuk kartu produk di katalog, peramban pindah ke `/detail.html?id=1`, lalu `detail.js` mengambil data produk itu dari server dan mengisinya ke halaman.
+
+Yang sudah diuji (basis data MariaDB/MySQL lokal, server di port 3001):
+- Data uji: Kopi Sachet Rp5.000 (stok 20), Gula 1kg Rp17.000 (stok 10), Teh Melati Rp4.000 (stok 0)
+- `GET /api/produk/1` dan `/2` mengembalikan detail yang benar; `/3` (stok habis), `/999`, dan `/abc` menghasilkan 404
+- Halaman `/`, `/detail.html`, `/js/detail.js`, `/js/app.js`, dan `/css/style.css` dimuat HTTP 200; `detail.html` berisi elemen detail dan tautan kembali ke katalog
+- Daftar `GET /api/produk` tetap jalan seperti sebelumnya (2 produk + 2 kategori)
+- Catatan soal pengujian: MariaDB di mesin ini masih baru — pengguna `kasir` yang tertulis di `.env` belum ada, jadi server sempat gagal konek (`Access denied for user 'kasir'`). Pengujian akhirnya memakai pengguna sementara `katalog_uji` lewat variabel environment, tanpa mengubah `.env`. Setelah pengujian, data uji dihapus (tabel kembali kosong) dan pengguna sementara ikut dihapus. Jadi kalau Farid menjalankan dari mesin baru, buat dulu pengguna basis datanya seperti langkah baru di README.
+- Data uji dibersihkan, tabel kembali kosong
+
+Kekurangan saat ini (jujur):
+- Belum ada keranjang belanja dan belum ada pemesanan via WhatsApp — itu lanjutan Tahap 2 dan Tahap 3.
+- Halaman detail belum ada tombol "tambah ke keranjang" — tombol itu ikut potongan keranjang.
+- Belum ada kolom pencarian — itu Tahap 4.
+- Belum ter-deploy.
 
 ## Rencana gabung dengan project lain
 
@@ -43,4 +69,4 @@ Project ini dirancang supaya nanti bisa digabung dengan aplikasi kasir warung da
 
 ## Tahap berikutnya
 
-Tahap 2: Detail produk dan keranjang belanja.
+Tahap 2 (lanjutan): Keranjang belanja — pelanggan bisa menambah produk dari halaman detail, isi keranjang disimpan di Local Storage, lalu tampil jumlah dan total harga.
