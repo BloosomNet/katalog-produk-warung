@@ -1,6 +1,5 @@
 // Titik masuk aplikasi: menjalankan server Express dan melayani halaman katalog.
-// Tahap 1: kerangka saja. Detail produk, keranjang, dan pesan via WhatsApp
-// dibuat di tahap berikutnya.
+// Tahap 1-3 sudah selesai: kerangka, detail produk, keranjang, dan pesan via WhatsApp.
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -19,6 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/sehat', async (req, res) => {
   res.json({ status: 'ok', pesan: 'Server katalog warung berjalan' });
 });
+
+// Nomor WhatsApp warung, dipakai tombol pesan di halaman keranjang.
+app.get('/api/wa-nomor', require('./src/controllers/katalogController').waNomor);
 
 // Rute katalog produk.
 app.use('/api/produk', require('./src/routes/produk'));

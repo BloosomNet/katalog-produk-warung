@@ -29,4 +29,15 @@ async function detailProduk(req, res) {
   }
 }
 
-module.exports = { daftarProduk, detailProduk };
+// GET /api/wa-nomor — nomor WhatsApp warung dari .env, dibersihkan dulu
+// (spasi, tanda +, dan strip dibuang) supaya bisa langsung dipakai di wa.me.
+// Kalau belum diatur, dijawab 404 supaya peramban bisa menampilkan pesan yang jelas.
+function waNomor(req, res) {
+  const mentah = (process.env.WA_NOMOR || '').replace(/[^0-9]/g, '');
+  if (!mentah) {
+    return res.status(404).json({ pesan: 'Nomor WhatsApp warung belum diatur' });
+  }
+  res.json({ nomor: mentah });
+}
+
+module.exports = { daftarProduk, detailProduk, waNomor };

@@ -79,8 +79,8 @@ Yang sudah diuji:
 - Data uji dibersihkan, tabel kembali kosong
 
 Kekurangan saat ini (jujur):
-- Belum ada pemesanan via WhatsApp — itu Tahap 3, tombol pesannya belum ada di halaman keranjang.
-- Harga dan stok di keranjang memakai salinan saat produk dimasukkan — kalau stok berubah di warung setelah itu, keranjang belum tahu. Nanti dicek ulang saat pesan via WhatsApp dibuat.
+- Pemesanan via WhatsApp sudah beres di Tahap 3 (di bawah).
+- Harga dan stok di keranjang memakai salinan saat produk dimasukkan — tapi sebelum pesan via WhatsApp dibuat, stok dicek ulang ke server (sudah beres di Tahap 3).
 - Belum ada kolom pencarian — itu Tahap 4.
 - Belum ter-deploy.
 
@@ -93,6 +93,26 @@ Project ini dirancang supaya nanti bisa digabung dengan aplikasi kasir warung da
 - Project yang berjalan paralel: aplikasi-kasir-warung (kasir, riwayat, laporan) dan inventaris-barang-warung (stok, barang masuk/keluar, stok menipis, supplier).
 - Arah jangka panjang: kesulitan naik bertahap — setelah gabung jadi sistem UMKM, tambah modul yang lebih dalam (keuangan warung, laporan dan grafik, export data, pencarian/filter/pagination, multi-pengguna dan peran), menuju aplikasi nyata yang dipakai orang sungguhan. Tiap project tetap maksimal satu konsep baru dan tetap bisa dijelaskan ulang saat interview. Konsep baru project ini: pemesanan via WhatsApp (Tahap 3).
 
+## Tahap 3 — Selesai: Pesan via WhatsApp
+
+Yang dibuat kali ini:
+- Endpoint baru `GET /api/wa-nomor` di `src/controllers/katalogController.js` (didaftarkan di `server.js`): membaca `WA_NOMOR` dari `.env`, dibersihkan dulu (spasi, `+`, dan strip dibuang) supaya langsung bisa dipakai di `wa.me`. Kalau belum diatur, dijawab 404 dengan pesan yang jelas.
+- Tombol "Pesan via WhatsApp" di halaman keranjang (`public/keranjang.html` + `public/js/keranjang.js`): sebelum pesan dibuat, stok dicek ulang ke server — barang yang sudah habis dikeluarkan dari keranjang, jumlah yang melebihi stok dipotong, harga ikut harga terbaru, dan perubahannya ditampilkan sebagai catatan. Lalu nomor warung diambil dari server, isi pesanan disusun otomatis (sapaan, daftar barang + jumlah + subtotal, total harga), dan `wa.me/<nomor>?text=...` dibuka di tab baru — pelanggan tinggal ketuk kirim di WhatsApp.
+- Kunci baru `WA_NOMOR` di `.env.example` (format internasional tanpa +, contoh `6281234567890`), plus penjelasan singkat di README.
+- Gaya tombol WhatsApp di `public/css/style.css`: hijau, selebar kartu, tinggi 48px.
+
+Cara kerja singkat:
+- Pelanggan mengetuk tombol pesan di `/keranjang.html`. Peramban meminta `GET /api/produk` untuk stok terbaru, menyesuaikan isi keranjang di Local Storage, lalu meminta `GET /api/wa-nomor`. Pesan disusun dari keranjang yang sudah disesuaikan, di-encode, dan dibuka sebagai tautan `wa.me` — tidak ada data pesanan yang disimpan di server, semuanya lewat WhatsApp.
+
+Yang sudah diuji:
+- Logika diuji lewat Node dengan tiruan Local Storage (12 pemeriksaan, semua lolos): isi pesan benar (sapaan, tiap barang dengan jumlah dan subtotal, total Rp27.000 untuk 2 Kopi + 1 Gula), pesan kosong tetap ada total Rp0, `encodeURIComponent` menghasilkan `%0A` untuk baris baru; penyesuaian stok benar (jumlah dipotong kalau stok tinggal sedikit, harga ikut harga terbaru, barang habis dikeluarkan dengan catatan, tanpa perubahan daftar tetap sama).
+- Uji server (MariaDB 10.11 lokal, port 3001, 6 produk contoh sama seperti preview pagi): `GET /api/produk` mengembalikan 5 produk (Teh Melati stok 0 tidak muncul) + 3 kategori; `GET /api/produk/1` benar (Kopi Sachet); `GET /api/produk/3` 404; `GET /api/wa-nomor` mengembalikan `{"nomor":"6281234567890"}` (nomor dummy di `.env` lokal); tanpa `WA_NOMOR` dijawab 404 "Nomor WhatsApp warung belum diatur" (diuji di port 3002); semua halaman 200 (`/`, `/detail.html`, `/keranjang.html`, CSS + semua JS); tidak ada error di log server. Catatan: MariaDB di VM ini ternyata tidak ada lagi saat run ini jalan (VM sempat di-reset sejak run pagi) — `mariadb-server` 10.11 diinstal ulang lewat apt (mirror cogent sempat macet, ganti ke azure saja), lalu pengguna `kasir` + db `katalog_warung` + 6 produk contoh dibuat ulang. Klik tombol pesan di peramban sungguhan belum diuji (tautan `wa.me` disusun dari fungsi yang sama dengan yang lolos uji Node di atas).
+- Data uji (6 produk contoh) TIDAK dibersihkan kali ini — sama seperti preview pagi, biar bisa dipakai lagi buat cek tampilan.
+
+Kekurangan saat ini (jujur):
+- Belum ada kolom pencarian — itu Tahap 4.
+- Belum ter-deploy.
+
 ## Tahap berikutnya
 
-Tahap 3: Pesan via WhatsApp — tombol pesan di halaman keranjang yang membuka link wa.me dengan isi pesanan (daftar barang, jumlah, dan total) terisi otomatis. Nomor WhatsApp warung dibaca dari `.env`.
+Tahap 4: Pencarian dan filter kategori — kolom pencarian produk di katalog (dan saringan kategori yang sudah ada tetap jalan).

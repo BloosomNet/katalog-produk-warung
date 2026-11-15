@@ -162,6 +162,87 @@ function gambarKeranjang() {
   document.getElementById('total-harga').textContent = formatRupiah(totalHarga());
 }
 
+// Menyusun isi pesan WhatsApp dari isi keranjang: daftar barang dengan
+// jumlah dan subtotalnya, lalu total harga di baris terakhir.
+function susunPesan(daftar) {
+  const baris = daftar.map(
+    (item) => '- ' + item.nama + ' x' + item.jumlah + ' = ' + formatRupiah(item.harga * item.jumlah)
+  );
+  const total = daftar.reduce((t, item) => t + item.harga * item.jumlah, 0);
+  return ['Halo, saya mau pesan:', ...baris, '', 'Total: ' + formatRupiah(total)].join('\n');
+}
+
+// Mencocokkan isi keranjang dengan stok terbaru dari server. Barang yang
+// sudah habis dikeluarkan, jumlah yang melebihi stok dipotong, harga ikut
+// harga terbaru. Mengembalikan daftar baru dan catatan perubahannya.
+function sesuaikanDenganStok(daftar, produkSegar) {
+  const catatan = [];
+  const segar = new Map(produkSegar.map((p) => [p.id, p]));
+  const hasil = [];
+  daftar.forEach((item) => {
+    const p = segar.get(item.id);
+    if (!p) {
+      catatan.push(item.nama + ' sudah habis, dikeluarkan dari keranjang.');
+      return;
+    }
+    if (item.jumlah > p.stok) {
+      catatan.push('Jumlah ' + item.nama + ' disesuaikan jadi ' + p.stok + ' (stok tinggal segitu).');
+      hasil.push({ ...item, harga: p.harga, stok: p.stok, jumlah: p.stok });
+    } else {
+      hasil.push({ ...item, harga: p.harga, stok: p.stok });
+    }
+  });
+  return { daftar: hasil, catatan };
+}
+
+// Mengambil stok terbaru dari server, lalu menyesuaikan isi keranjang.
+// Dipanggil sebelum pesan dibuat, supaya pesanan tidak berisi barang habis.
+async function cekStokUlang() {
+  const res = await fetch('/api/produk');
+  if (!res.ok) throw new Error('gagal mengambil stok terbaru');
+  const data = await res.json();
+  const { daftar, catatan } = sesuaikanDenganStok(bacaKeranjang(), data.produk || []);
+  simpanKeranjang(daftar);
+  return catatan;
+}
+
+// Tombol "Pesan via WhatsApp": cek stok ulang, ambil nomor warung dari
+// server, lalu buka wa.me di tab baru dengan isi pesanan terisi otomatis.
+async function pesanViaWhatsApp() {
+  const pesanEl = document.getElementById('pesan');
+  const tombol = document.getElementById('pesan-whatsapp');
+  if (bacaKeranjang().length === 0) {
+    pesanEl.textContent = 'Keranjang masih kosong.';
+    return;
+  }
+  tombol.disabled = true;
+  pesanEl.textContent = 'Menyiapkan pesanan...';
+  try {
+    const catatan = await cekStokUlang();
+    const sesudah = bacaKeranjang();
+    if (sesudah.length === 0) {
+      pesanEl.textContent = 'Semua barang di keranjang sudah habis. Cek lagi katalognya.';
+      gambarKeranjang();
+      return;
+    }
+    const res = await fetch('/api/wa-nomor');
+    if (!res.ok) throw new Error('nomor belum diatur');
+    const { nomor } = await res.json();
+    const tautan =
+      'https://wa.me/' + nomor + '?text=' + encodeURIComponent(susunPesan(sesudah));
+    pesanEl.textContent = catatan.join(' ');
+    window.open(tautan, '_blank');
+    gambarKeranjang();
+  } catch (err) {
+    pesanEl.textContent =
+      err.message === 'nomor belum diatur'
+        ? 'Nomor WhatsApp warung belum diatur. Hubungi pemilik warung langsung.'
+        : 'Tidak bisa menyiapkan pesanan sekarang, coba lagi sebentar lagi.';
+  } finally {
+    tombol.disabled = false;
+  }
+}
+
 // Tombol "Kosongkan keranjang" hanya ada di halaman keranjang.
 if (typeof document !== 'undefined') {
   const kosongkanBtn = document.getElementById('kosongkan-keranjang');
@@ -170,6 +251,10 @@ if (typeof document !== 'undefined') {
       kosongkanKeranjang();
       gambarKeranjang();
     });
+  }
+  const pesanBtn = document.getElementById('pesan-whatsapp');
+  if (pesanBtn) {
+    pesanBtn.addEventListener('click', pesanViaWhatsApp);
   }
   perbaruiLencana();
   gambarKeranjang();
@@ -185,5 +270,7 @@ if (typeof module !== 'undefined' && module.exports) {
     kosongkanKeranjang,
     totalItem,
     totalHarga,
+    susunPesan,
+    sesuaikanDenganStok,
   };
 }

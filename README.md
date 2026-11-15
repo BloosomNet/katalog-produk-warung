@@ -10,7 +10,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 
 - [x] Tahap 1: Kerangka aplikasi dan katalog produk (daftar barang yang masih tersedia, saringan kategori)
 - [x] Tahap 2: Detail produk dan keranjang belanja (halaman detail, keranjang tersimpan di Local Storage)
-- [ ] Tahap 3: Pesan via WhatsApp (link wa.me dengan isi pesanan otomatis)
+- [x] Tahap 3: Pesan via WhatsApp (tombol di keranjang, link wa.me isi pesanan otomatis, nomor warung dari `.env`)
 - [ ] Tahap 4: Pencarian dan filter kategori
 - [ ] Tahap 5: Tampilan rapi di HP
 - [ ] Tahap 6: Deploy online
@@ -24,7 +24,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 
 ## Cara menjalankan
 
-1. Salin berkas `.env.example` menjadi `.env`, lalu isi pengaturannya:
+1. Salin berkas `.env.example` menjadi `.env`, lalu isi pengaturannya — termasuk `WA_NOMOR` (nomor WhatsApp warung, format internasional tanpa +, contoh `6281234567890`), supaya tombol pesan di keranjang bisa dipakai:
 
    ```bash
    cp .env.example .env

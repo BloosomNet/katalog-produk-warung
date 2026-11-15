@@ -231,6 +231,26 @@ h2 { margin: 0 0 12px; }
   font-weight: 700;
 }
 
+.tombol-whatsapp {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin: 12px 0;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #25d366;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tombol-whatsapp:disabled {
+  background: #9db8a4;
+  cursor: default;
+}
+
 .tombol-kosongkan {
   min-height: 44px;
   padding: 10px 16px;
