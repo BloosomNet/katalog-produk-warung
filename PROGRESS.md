@@ -139,6 +139,30 @@ Kekurangan saat ini (jujur):
 - Belum ada tampilan rapi di HP — itu Tahap 5.
 - Belum ter-deploy.
 
+## Tahap 5 (potongan 1 — selesai): Tampilan katalog dan detail di HP
+
+Yang dibuat kali ini (baru halaman katalog sama detail, keranjang nyusul potongan 2):
+- Saringan kategori di layar kecil sekarang bisa digeser ke samping (overflow-x), jadi tombolnya nggak numpuk ke bawah makan tempat. Tombolnya juga nggak menyusut.
+- Kartu produk dikasih bayangan halus, biar kepisah jelas dari latar.
+- Tautan keranjang di kepala halaman dibikin pil hijau muda — lebih gampang diketuk di HP, nggak cuma teks polos.
+- Beli di halaman detail: di layar kecil, kolom jumlah sama tombol "+ Keranjang" jadi selebar kartu dan numpuk ke bawah, jadi nggak sempit-sempitan.
+- Catatan usang di bawah katalog sama detail ("Pemesanan via WhatsApp menyusul di tahap berikutnya") dibenerin — WhatsApp-nya udah jadi dari Tahap 3, jadi tulisannya sekarang ngasih tahu yang bener.
+
+Cara kerja singkat:
+- Semua perubahan cuma CSS (`public/css/style.css`, media query max-width 600px) plus dua baris teks di `public/index.html` dan `public/detail.html`. Server sama sekali nggak disentuh.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
+- Data uji: Kopi Sachet Rp5.000 (stok 20), Gula 1kg Rp17.000 (stok 10), Kopi Tubruk Rp8.000 (stok 15), Mie Instan Rp3.500 (stok 50), Teh Melati Rp4.000 (stok 0)
+- `GET /api/produk` mengembalikan 4 produk (Teh Melati stok 0 tidak muncul); `?cari=kopi` 2 hasil; regresi `/api/wa-nomor` 200
+- Halaman `/`, `/detail.html`, `/keranjang.html`, `/css/style.css`, semua JS 200; CSS yang disajikan server sudah berisi aturan baru (geser saringan, kolom beli, bayangan kartu, pil keranjang); kurung kurawal 54/54 seimbang
+- Catatan usang "menyusul di tahap berikutnya" sudah 0 di kedua halaman; teks pengganti muncul di katalog
+- Tangkapan layar langsung dari VM belum bisa — Chrome di VM menolak jalan headless, sama kayak waktu kasir. Jadi tampilan akhirnya dicek lewat demo Railway di peramban setelah deploy, bukan dari tangkapan layar lokal.
+- Data uji dibersihkan, tabel kembali kosong, server dimatikan sesudah uji.
+
+Kekurangan saat ini (jujur):
+- Halaman keranjang belum dirapikan buat HP — itu potongan 2 Tahap 5 (baris keranjang masih bisa sempit di layar kecil).
+- Belum ter-deploy.
+
 ## Tahap berikutnya
 
-Tahap 5: Tampilan rapi di HP — periksa dan rapikan tampilan katalog di layar kecil (yang sekarang baru seadanya dari Tahap 1).
+Tahap 5 (potongan 2): rapikan halaman keranjang di HP, lalu centang Tahap 5 di README.

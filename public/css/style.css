@@ -77,6 +77,8 @@ h2 { margin: 0 0 12px; }
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .kartu-produk:hover {
@@ -140,13 +142,17 @@ h2 { margin: 0 0 12px; }
   font-size: 0.85em;
 }
 
-/* Tautan keranjang di kepala halaman. */
+/* Tautan keranjang di kepala halaman: dibikin pil hijau muda biar gampang diketuk di HP. */
 .bar-atas {
   text-align: right;
   margin: 0 0 4px;
 }
 
 .tautan-keranjang {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #eef3e6;
   color: #2e6b34;
   font-weight: 700;
   text-decoration: none;
@@ -285,4 +291,24 @@ h2 { margin: 0 0 12px; }
   .wadah { padding: 16px 12px; }
   h1 { font-size: 1.4em; }
   .kartu { padding: 12px; }
+
+  /* Saringan kategori digeser ke samping, bukan numpuk ke bawah. */
+  .saringan {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tombol-saring { flex-shrink: 0; }
+
+  /* Beli di halaman detail: kolom jumlah sama tombol selebar kartu. */
+  .beli {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .beli input { width: 100%; }
+  #tambah-keranjang { width: 100%; }
+
+  /* Judul halaman detail jangan nempel sama tautan di atasnya. */
+  #detail-produk h1 { margin-top: 8px; }
 }
