@@ -4,6 +4,13 @@ const daftarEl = document.getElementById('daftar-produk');
 const saringanEl = document.getElementById('saringan');
 const pesanEl = document.getElementById('pesan');
 const kosongEl = document.getElementById('kosong');
+const cariEl = document.getElementById('cari');
+
+// Kategori dan kata kunci yang sedang aktif — keduanya dikirim bareng
+// tiap kali daftar dimuat, jadi cari di dalam kategori tetap jalan.
+let kategoriAktif = '';
+let kataKunci = '';
+let jedaCari = null;
 
 // Mengubah angka menjadi format rupiah, misalnya 5000 menjadi Rp5.000.
 function formatRupiah(angka) {
@@ -58,30 +65,54 @@ function tampilkanSaringan(kategoriList, kategoriAktif) {
     tombol.className = 'tombol-saring' + (kategori === kategoriAktif ? ' aktif' : '');
     tombol.dataset.kategori = kategori;
     tombol.textContent = kategori || 'Semua';
-    tombol.addEventListener('click', () => muatProduk(kategori));
+    tombol.addEventListener('click', () => pilihKategori(kategori));
     saringanEl.append(tombol);
   });
 }
 
 // Meminta daftar produk ke server, lalu menampilkannya.
-// Kalau diberi kategori, hanya produk dalam kategori itu yang diminta.
-async function muatProduk(kategori) {
-  const aktif = kategori || '';
+// Kategori dan kata kunci yang aktif dikirim bareng sebagai parameter.
+async function muatProduk() {
   pesanEl.textContent = '';
   try {
-    const alamat = '/api/produk' + (aktif ? '?kategori=' + encodeURIComponent(aktif) : '');
-    const tanggapan = await fetch(alamat);
+    const param = new URLSearchParams();
+    if (kategoriAktif) param.set('kategori', kategoriAktif);
+    if (kataKunci) param.set('cari', kataKunci);
+    const tambahan = param.toString();
+    const tanggapan = await fetch('/api/produk' + (tambahan ? '?' + tambahan : ''));
     if (!tanggapan.ok) throw new Error('Server menjawab ' + tanggapan.status);
     const data = await tanggapan.json();
 
-    tampilkanSaringan(data.kategori, aktif);
+    tampilkanSaringan(data.kategori, kategoriAktif);
 
     daftarEl.innerHTML = '';
     data.produk.forEach((produk) => daftarEl.append(buatKartuProduk(produk)));
     kosongEl.hidden = data.produk.length > 0;
+    if (data.produk.length === 0 && kataKunci) {
+      kosongEl.hidden = false;
+      kosongEl.textContent = 'Tidak ada produk yang cocok dengan "' + kataKunci + '".';
+    } else if (data.produk.length === 0) {
+      kosongEl.textContent = 'Belum ada produk dalam kategori ini.';
+    }
   } catch (err) {
     pesanEl.textContent = 'Gagal memuat katalog. Periksa server lalu muat ulang halaman.';
   }
 }
 
-muatProduk('');
+// Pindah kategori: simpan yang aktif, lalu muat ulang daftar.
+function pilihKategori(kategori) {
+  kategoriAktif = kategori || '';
+  muatProduk();
+}
+
+// Mengetik di kolom cari: tunggu 300 ms sesudah berhenti mengetik baru
+// minta ke server, supaya tidak dibanjiri tiap ketikan.
+cariEl.addEventListener('input', () => {
+  clearTimeout(jedaCari);
+  jedaCari = setTimeout(() => {
+    kataKunci = cariEl.value.trim();
+    muatProduk();
+  }, 300);
+});
+
+muatProduk();

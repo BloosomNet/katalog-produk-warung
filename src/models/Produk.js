@@ -6,20 +6,29 @@ const pool = require('../config/database');
 
 // Mengambil produk yang masih ada stoknya, diurutkan berdasarkan nama.
 // Kalau diberi kategori, hanya produk dalam kategori itu yang dikembalikan.
+// Kalau diberi kata kunci, hanya produk yang nama atau kategorinya cocok.
 // Produk yang stoknya habis tidak ditampilkan, supaya pelanggan tidak
 // memesan barang yang tidak tersedia.
-async function semuaProduk(kategori) {
+async function semuaProduk(kategori, kataKunci) {
   const kat = typeof kategori === 'string' ? kategori.trim() : '';
-  if (!kat) {
-    const [baris] = await pool.query(
-      'SELECT * FROM produk WHERE stok > 0 ORDER BY nama ASC'
-    );
-    return baris;
+  const cari = typeof kataKunci === 'string' ? kataKunci.trim() : '';
+  let sql = 'SELECT * FROM produk WHERE stok > 0';
+  const param = [];
+  if (kat) {
+    sql += ' AND kategori = ?';
+    param.push(kat);
   }
-  const [baris] = await pool.query(
-    'SELECT * FROM produk WHERE stok > 0 AND kategori = ? ORDER BY nama ASC',
-    [kat]
-  );
+  if (cari) {
+    // Tanda %, _ dan \ di kata kunci diamankan dulu, supaya dianggap
+    // huruf biasa dan bukan pola LIKE. Tanpa klausa ESCAPE tambahan —
+    // MariaDB menolaknya (pernah bikin 500 di kasir), karakter pelindung
+    // bawaan LIKE sudah cukup.
+    const aman = cari.replace(/([%_\\])/g, '\\$1');
+    sql += ' AND (nama LIKE ? OR kategori LIKE ?)';
+    param.push('%' + aman + '%', '%' + aman + '%');
+  }
+  sql += ' ORDER BY nama ASC';
+  const [baris] = await pool.query(sql, param);
   return baris;
 }
 

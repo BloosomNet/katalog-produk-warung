@@ -3,10 +3,15 @@
 const Produk = require('../models/Produk');
 
 // GET /api/produk — daftar produk yang masih tersedia.
-// Boleh disaring dengan ?kategori=, misalnya /api/produk?kategori=Minuman
+// Boleh disaring dengan ?kategori=, misalnya /api/produk?kategori=Minuman,
+// dan dicari dengan ?cari=, misalnya /api/produk?cari=kopi. Keduanya boleh
+// dipakai bareng: cari di dalam kategori itu saja.
 async function daftarProduk(req, res) {
   try {
-    const produk = await Produk.semuaProduk(req.query.kategori);
+    const kataKunci = typeof req.query.cari === 'string'
+      ? req.query.cari.trim().slice(0, 100)
+      : '';
+    const produk = await Produk.semuaProduk(req.query.kategori, kataKunci);
     const kategori = await Produk.semuaKategori();
     res.json({ produk, kategori });
   } catch (err) {

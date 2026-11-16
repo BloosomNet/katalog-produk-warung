@@ -113,6 +113,32 @@ Kekurangan saat ini (jujur):
 - Belum ada kolom pencarian — itu Tahap 4.
 - Belum ter-deploy.
 
+## Tahap 4 — Selesai: Pencarian produk
+
+Yang dibuat kali ini:
+- Model `src/models/Produk.js`: `semuaProduk` sekarang menerima kata kunci kedua — kalau ada, produk disaring dengan `LIKE` pada nama atau kategori. Tanda `%`, `_`, dan `\` di kata kunci diamankan dulu supaya dianggap huruf biasa, bukan pola. Sengaja tanpa klausa `ESCAPE` tambahan, karena MariaDB pernah menolaknya di kasir (bikin 500); karakter pelindung bawaan LIKE sudah cukup.
+- Pengatur `src/controllers/katalogController.js`: `daftarProduk` membaca kata kunci dari `?cari=`, dipangkas dan dibatasi 100 huruf, lalu diteruskan ke model. Pencarian dan saringan kategori boleh dipakai bareng — cari di dalam kategori itu saja.
+- Halaman katalog (`public/index.html` + `public/js/app.js`): kolom pencarian di atas tombol saringan, tipe `search` dengan placeholder "Cari produk, misal kopi...". Permintaan baru dikirim 300 ms setelah berhenti mengetik (debounce), sama seperti di kasir. Kategori dan kata kunci yang aktif disimpan di variabel, jadi pindah kategori tidak menghapus yang diketik, begitu juga sebaliknya. Kalau tidak ada yang cocok, muncul pesan "Tidak ada produk yang cocok dengan ...".
+- Gaya baru di `public/css/style.css`: kelas `.pencarian` — selebar kartu, tinggi 44px, huruf 16px supaya peramban HP tidak memperbesar layar saat kolom disentuh.
+
+Cara kerja singkat:
+- Peramban mengirim kata kunci ke `GET /api/produk?cari=...`, boleh bareng `?kategori=...`. Server menyaring di basis data dengan `LIKE`, lalu peramban menampilkan hasilnya sebagai kartu seperti biasa.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
+- Data uji: Kopi Sachet Rp5.000 (Minuman, stok 20), Gula 1kg Rp17.000 (Bahan Dapur, stok 10), Teh Melati Rp4.000 (Minuman, stok 0), Kopi Tubruk Rp8.000 (Minuman, stok 15), Mie Instan Rp3.500 (Bahan Dapur, stok 50)
+- `?cari=kopi` mengembalikan 2 hasil: Kopi Sachet dan Kopi Tubruk; `?cari=KOPI` juga 2 hasil (tidak peduli huruf besar-kecil)
+- `?cari=minuman` mengembalikan 2 hasil (cocok lewat kategori); `?cari=kopi&kategori=Minuman` 2 hasil; `?cari=kopi&kategori=Bahan Dapur` 0 hasil — gabungan keduanya jalan
+- `?cari=%` dan `?cari=_` mengembalikan 0 hasil (tanda pola tidak lagi dianggap pola); `?cari=tidakada` 0 hasil
+- Tanpa `?cari=` tetap mengembalikan semua 4 produk yang stoknya ada (Teh Melati stok 0 tidak muncul)
+- Halaman `/`, `/detail.html`, `/keranjang.html`, `/css/style.css`, `/js/app.js`, `/js/keranjang.js`, `/js/detail.js`, `/api/sehat`, dan `/api/wa-nomor` dimuat HTTP 200; kolom cari ada di halaman; tidak ada error di log server
+- Catatan: MariaDB lokal mati lagi sebelum uji — dinyalakan dulu, db `katalog_warung` + pengguna `kasir` dibuat ulang dari `.env` lokal karena ikut hilang. Bukan masalah kode.
+- Data uji dibersihkan, tabel kembali kosong
+
+Kekurangan saat ini (jujur):
+- Pencarian hanya mencocokkan nama dan kategori, belum harga atau stok.
+- Belum ada tampilan rapi di HP — itu Tahap 5.
+- Belum ter-deploy.
+
 ## Tahap berikutnya
 
-Tahap 4: Pencarian dan filter kategori — kolom pencarian produk di katalog (dan saringan kategori yang sudah ada tetap jalan).
+Tahap 5: Tampilan rapi di HP — periksa dan rapikan tampilan katalog di layar kecil (yang sekarang baru seadanya dari Tahap 1).

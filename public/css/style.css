@@ -29,6 +29,18 @@ h2 { margin: 0 0 12px; }
 
 .pesan { color: #9a3b26; }
 
+// Kolom pencarian di atas daftar produk.
+.pencarian {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+}
+
 /* Tombol saringan kategori: gampang diketuk di HP (tinggi minimal 44px). */
 .saringan {
   display: flex;
