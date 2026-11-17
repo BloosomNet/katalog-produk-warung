@@ -13,7 +13,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 - [x] Tahap 3: Pesan via WhatsApp (tombol di keranjang, link wa.me isi pesanan otomatis, nomor warung dari `.env`)
 - [x] Tahap 4: Pencarian dan filter kategori (kolom cari di katalog, gabung dengan saringan kategori)
 - [x] Tahap 5: Tampilan rapi di HP
-- [ ] Tahap 6: Deploy online
+- [x] Tahap 6: Deploy online
 
 ## Teknologi yang dipakai
 
@@ -54,7 +54,9 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 
 ## Demo
 
-Belum ter-deploy. Tautan demo akan ditulis di sini setelah tahap deploy selesai.
+Demo online (Railway): https://katalog-produk-warung-production.up.railway.app
+
+Katalog di demo masih kosong — produk tampil setelah ditambahkan ke basis data. Nomor WhatsApp di demo adalah nomor contoh.
 
 ## Kemajuan
 

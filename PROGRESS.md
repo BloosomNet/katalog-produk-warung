@@ -208,6 +208,28 @@ Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
 Kekurangan saat ini (jujur):
 - Belum ter-deploy — itu Tahap 6, tahap terakhir katalog.
 
+## Tahap 6 (selesai): Deploy online ke Railway
+
+Yang dibuat kali ini:
+- Project Railway baru dari repo ini (branch main) di workspace yang sama dengan aplikasi kasir, dengan service MySQL di project yang sama.
+- Variabel di service web: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` mengambil referensi dari service MySQL, `DB_NAME=katalog_warung`, dan `WA_NOMOR` diisi nomor contoh (bukan nomor pribadi). `PORT` tidak diisi — Railway yang menyediakan.
+- Domain publik dibuat: https://katalog-produk-warung-production.up.railway.app
+- README: Tahap 6 dicentang dan tautan demo ditulis di bagian Demo.
+
+Cara kerja singkat:
+- Railway menjalankan `npm start`; server memanggil `siapkanTabel()` dulu (dibuat di persiapan deploy), jadi tabel `produk` kebikin otomatis di MySQL Railway tanpa menjalankan `schema.sql` manual.
+
+Yang sudah diuji (demo publik, 18 Nov 2026 pagi):
+- `/` dimuat HTTP 200 — halaman "Katalog Produk Warung" tampil dengan kolom pencarian dan filter kategori; karena basis datanya masih kosong, tertulis "Belum ada produk dalam kategori ini."
+- `/api/sehat` mengembalikan {"status":"ok","pesan":"Server katalog warung berjalan"}
+- `/api/produk` mengembalikan {"produk":[],"kategori":[]} (kosong, sesuai basis data demo yang memang belum diisi)
+- `/keranjang.html` dimuat HTTP 200
+
+Kekurangan saat ini (jujur):
+- Katalog demo masih kosong — belum ada halaman admin untuk mengisi produk; produk baru bisa masuk lewat basis data langsung.
+- Dua kendala ketemu pas deploy dan sudah diatasi: (1) repo ini awalnya belum termasuk cakupan Railway App di GitHub, jadi ditambahkan dulu ke instalasinya (sekarang 2 repo: kasir + katalog); (2) MySQL Railway secara bawaan hanya membuat database `railway`, jadi `MYSQL_DATABASE` di service MySQL diatur ke `katalog_warung` dan volumenya diinisialisasi ulang selagi masih kosong — sesudah itu tabel kebikin dan endpoint jalan.
+- Workspace Railway masih masa Trial.
+
 ## Tahap berikutnya
 
-Tahap 6: Deploy online — pola yang sama seperti aplikasi kasir (Railway). Persiapan deploy sudah beres: tabel `produk` sekarang dibuat otomatis pas server nyala, jadi di Railway tinggal isi variabel `DB_*` dari service MySQL dan `WA_NOMOR`, tanpa jalanin `schema.sql` manual.
+Semua tahap katalog selesai (1–6). Project ini tinggal menunggu penggabungan besar: kasir + katalog + inventaris menjadi satu sistem manajemen UMKM (repo terpisah), sesuai rencana portofolio.
