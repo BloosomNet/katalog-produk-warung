@@ -185,6 +185,29 @@ Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
 Kekurangan saat ini (jujur):
 - Belum ter-deploy — itu Tahap 6, tahap terakhir katalog.
 
+## Persiapan deploy — Selesai: Tabel produk dibuat otomatis pas server nyala
+
+Yang dibuat kali ini:
+- Berkas baru `src/config/siapkanTabel.js`: bikin tabel `produk` sendiri pas server nyala, polanya sama persis kayak di kasir dan inventaris — isi tabelnya sama dengan `database/schema.sql` (id, nama, harga, stok, kategori, dibuat_pada). Kalau tabel udah ada, dilewatin (`CREATE TABLE IF NOT EXISTS`), jadi aman dijalankan berkali-kali.
+- Kalau basis data belum siap (misalnya MySQL Railway masih nyala), dicoba lagi sampai 12 kali dengan jeda 5 detik, baru nyerah dengan pesan yang jelas di log.
+- `server.js` sekarang memanggil `siapkanTabel()` dulu dan baru `listen` setelah tabel siap (pola yang sama kayak inventaris), supaya endpoint langsung bisa dipakai tanpa jalanin `schema.sql` manual.
+- README diperbarui: langkah membuat basis data sekarang menjelaskan kalau `schema.sql` boleh dilewati karena tabel dibuat otomatis. Tahap 6 belum dicentang — deploy-nya sendiri baru di tahap berikutnya.
+
+Cara kerja singkat:
+- Server nyala → `siapkanTabel()` mencoba `CREATE TABLE IF NOT EXISTS produk` ke basis data dari `.env`. Kalau gagal (basis data belum siap), tunggu 5 detik dan coba lagi, maksimal 12 kali. Kalau berhasil, log "Tabel sudah siap." muncul, lalu server mulai menerima permintaan.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
+- Basis data `katalog_warung` dikosongkan dulu (tabel `produk` dihapus) — pas server dinyalakan, log "Tabel sudah siap." muncul dan tabel `produk` kebikin otomatis dengan kolom yang sama persis kayak `schema.sql`
+- Data uji: Kopi Sachet Rp5.000 (stok 20), Gula 1kg Rp17.000 (stok 10), Teh Melati Rp4.000 (stok 0)
+- `GET /api/produk` mengembalikan 2 produk (Teh Melati stok 0 tidak muncul); `GET /api/produk/1` benar; `/3` (stok habis) 404; `GET /api/wa-nomor` 200
+- Halaman `/`, `/detail.html`, `/keranjang.html`, `/css/style.css`, dan semua JS dimuat HTTP 200; tidak ada error di log server
+- Server dimatikan lalu dinyalakan lagi dengan tabel yang sudah ada — log "Tabel sudah siap." muncul lagi dan `GET /api/produk` tetap jalan (tidak bikin tabel dobel, data lama tetap ada)
+- Catatan: MariaDB lokal sempat mati sebelum uji — dinyalakan dulu, lalu db `katalog_warung` + pengguna `kasir` dibuat ulang dari `.env` lokal (kata sandi acak dibuat di tempat, `.env` tetap lokal dan ter-ignore). Bukan masalah kode.
+- Data uji dibersihkan, tabel kembali kosong, server dimatikan sesudah uji
+
+Kekurangan saat ini (jujur):
+- Belum ter-deploy — itu Tahap 6, tahap terakhir katalog.
+
 ## Tahap berikutnya
 
-Tahap 6: Deploy online — pola yang sama seperti aplikasi kasir (Railway). Catatan: katalog belum punya pembuat tabel otomatis pas server nyala seperti kasir dan inventaris, jadi itu perlu dibuat dulu atau schema.sql dijalankan manual di basis data tujuan.
+Tahap 6: Deploy online — pola yang sama seperti aplikasi kasir (Railway). Persiapan deploy sudah beres: tabel `produk` sekarang dibuat otomatis pas server nyala, jadi di Railway tinggal isi variabel `DB_*` dari service MySQL dan `WA_NOMOR`, tanpa jalanin `schema.sql` manual.

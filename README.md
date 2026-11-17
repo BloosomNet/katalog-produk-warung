@@ -30,7 +30,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
    cp .env.example .env
    ```
 
-2. Buat basis data dari berkas `database/schema.sql` di MySQL.
+2. Buat basis data dari berkas `database/schema.sql` di MySQL — atau biarkan server membuatnya sendiri: sejak persiapan deploy, tabel `produk` dibuat otomatis pas server nyala (`src/config/siapkanTabel.js`), jadi langkah ini boleh dilewati kalau basis datanya masih kosong.
 3. Buat pengguna basis data yang sama dengan isi `.env` (misalnya pengguna `kasir` dengan kata sandi yang kamu tulis di `.env`):
 
    ```sql
