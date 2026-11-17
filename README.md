@@ -12,7 +12,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 - [x] Tahap 2: Detail produk dan keranjang belanja (halaman detail, keranjang tersimpan di Local Storage)
 - [x] Tahap 3: Pesan via WhatsApp (tombol di keranjang, link wa.me isi pesanan otomatis, nomor warung dari `.env`)
 - [x] Tahap 4: Pencarian dan filter kategori (kolom cari di katalog, gabung dengan saringan kategori)
-- [ ] Tahap 5: Tampilan rapi di HP
+- [x] Tahap 5: Tampilan rapi di HP
 - [ ] Tahap 6: Deploy online
 
 ## Teknologi yang dipakai

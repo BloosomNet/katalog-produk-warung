@@ -163,6 +163,28 @@ Kekurangan saat ini (jujur):
 - Halaman keranjang belum dirapikan buat HP — itu potongan 2 Tahap 5 (baris keranjang masih bisa sempit di layar kecil).
 - Belum ter-deploy.
 
+## Tahap 5 (potongan 2 — selesai): Tampilan halaman keranjang di HP
+
+Yang dibuat kali ini (cuma `public/css/style.css`, di dalam aturan layar kecil max-width 600px yang sudah ada — server dan JavaScript tidak disentuh):
+- Baris barang di keranjang sekarang ditumpuk ke bawah, bukan dijejalkan sebaris: nama barang dan harga satuan selebar kartu di atas, di bawahnya pengatur jumlah (tombol kurang/tambah tetap 44px) dan subtotal sebaris, lalu tombol Hapus selebar kartu paling bawah.
+- Total harga dibuat lebih besar (1.35em) biar langsung kelihatan sebelum pesan.
+- Tombol "Kosongkan keranjang" jadi selebar kartu, sejajar dengan tombol WhatsApp yang memang sudah selebar kartu.
+- Sekalian dibetulkan: komentar satu baris `// Kolom pencarian` di CSS diganti komentar CSS yang benar (`/* ... */`) — yang lama bukan komentar yang sah di CSS.
+
+Cara kerja singkat:
+- Sama seperti potongan 1: peramban HP membaca lebar layarnya, lalu memakai aturan `@media` yang cocok. Yang berubah hanya susunan tampilannya, bukan data atau alur keranjangnya.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
+- Data uji: Kopi Sachet Rp5.000 (stok 20), Gula 1kg Rp17.000 (stok 10), Teh Melati Rp4.000 (stok 0)
+- `GET /api/produk` mengembalikan 2 produk (Teh Melati stok 0 tidak muncul) + 2 kategori; `GET /api/wa-nomor` mengembalikan nomor dari `.env` lokal; `/api/sehat` ok
+- Halaman `/`, `/detail.html`, `/keranjang.html`, `/css/style.css`, dan semua JS dimuat HTTP 200; CSS yang disajikan server sudah berisi aturan keranjang baru (baris ditumpuk, tombol Hapus dan Kosongkan selebar kartu); kurung kurawal CSS 60/60 seimbang
+- Logika keranjang diuji lewat Node: tambah 2 Kopi + 1 Gula menghasilkan totalItem 3 dan totalHarga Rp27.000, isi pesan WhatsApp benar, ubah jumlah Kopi jadi 0 menghapusnya dari keranjang
+- Tangkapan layar langsung dari VM belum bisa — Chrome di VM menolak jalan headless, sama seperti potongan sebelumnya. Tampilan akhirnya dicek lewat demo setelah deploy nanti.
+- Data uji dibersihkan, tabel kembali kosong, server dimatikan sesudah uji
+
+Kekurangan saat ini (jujur):
+- Belum ter-deploy — itu Tahap 6, tahap terakhir katalog.
+
 ## Tahap berikutnya
 
-Tahap 5 (potongan 2): rapikan halaman keranjang di HP, lalu centang Tahap 5 di README.
+Tahap 6: Deploy online — pola yang sama seperti aplikasi kasir (Railway). Catatan: katalog belum punya pembuat tabel otomatis pas server nyala seperti kasir dan inventaris, jadi itu perlu dibuat dulu atau schema.sql dijalankan manual di basis data tujuan.
