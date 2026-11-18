@@ -57,7 +57,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 
 Demo online (Railway): https://katalog-produk-warung-production.up.railway.app
 
-Katalog di demo masih kosong — produk tampil setelah ditambahkan ke basis data. Nomor WhatsApp di demo adalah nomor contoh.
+Demo sudah terisi 10 produk contoh dari 4 kategori (Minuman, Makanan, Bahan Dapur, Kebutuhan Harian). Pemilik warung bisa menambah, mengubah, dan menghapus produk sendiri lewat halaman kelola: https://katalog-produk-warung-production.up.railway.app/kelola.html — halaman kelola ini belum dilindungi login, jadi khusus untuk demo. Nomor WhatsApp di demo adalah nomor contoh.
 
 ## Kemajuan
 

@@ -252,6 +252,17 @@ Kekurangan saat ini (jujur):
 - Halaman kelola BELUM dilindungi login — siapa pun yang tahu alamatnya bisa mengubah produk. Untuk demo portofolio ini diterima dulu; perlindungan login yang beneran ada di aplikasi kasir dan akan jadi satu di sistem gabungan nanti.
 - Demo online akan diisi produk contoh lewat halaman kelola ini sesudah deploy-nya jalan, supaya katalognya tidak kosong lagi.
 
+## Verifikasi demo live — Selesai: katalog online terisi produk contoh
+
+Yang terjadi pas verifikasi (18 Nov 2026 pagi):
+- Push Tahap 7 (commit fecbc53) awalnya tidak tampil di demo — ternyata auto deploy di service Railway katalog dalam keadaan mati, jadi push ke main tidak memicu deployment. Deployment dipicu manual dari panel Railway (check for updates), sesudah itu commit fecbc53 aktif dan `/kelola.html` bisa dibuka.
+- Demo diisi 10 produk contoh lewat endpoint kelola (semua dijawab 201): Aqua Botol 600 ml Rp4.000 (Minuman, stok 24), Teh Botol Sosro 450 ml Rp5.000 (Minuman, 18), Indomie Goreng Rp3.500 (Makanan, 40), Beras Ramos 5 kg Rp68.000 (Bahan Dapur, 8), Telur Ayam 1 kg Rp28.000 (Bahan Dapur, 12), Minyak Goreng 1 Liter Rp18.500 (Bahan Dapur, stok 0 — sengaja, buat nunjukin perilaku stok habis), Gula Pasir 1 kg Rp17.500 (Bahan Dapur, 10), Sabun Mandi Lifebuoy Rp5.500 (Kebutuhan Harian, 15), Pasta Gigi Pepsodent 75 g Rp9.000 (Kebutuhan Harian, 9), Deterjen Rinso 800 g Rp21.000 (Kebutuhan Harian, 6).
+- `GET /api/produk` (pelanggan) mengembalikan 9 produk + 4 kategori — Minyak Goreng yang stoknya 0 tidak tampil, sesuai aturan. `GET /api/produk/semua` (kelola) mengembalikan 10 produk.
+- `/kelola.html` dan `/` dimuat HTTP 200 di demo publik.
+
+Catatan buat deploy berikutnya:
+- Auto deploy Railway untuk service ini masih mati — habis push, deployment perlu dipicu manual dari panel Railway, atau nyalakan lagi auto deploy-nya di Settings > Source.
+
 ## Tahap berikutnya
 
 Semua tahap katalog selesai (1–7). Project ini tinggal menunggu penggabungan besar: kasir + katalog + inventaris menjadi satu sistem manajemen UMKM (repo terpisah), sesuai rencana portofolio.
