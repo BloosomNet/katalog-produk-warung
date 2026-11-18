@@ -14,6 +14,7 @@ Pemilik warung atau toko kecil dan pelanggannya. Pemilik tidak perlu lagi menjaw
 - [x] Tahap 4: Pencarian dan filter kategori (kolom cari di katalog, gabung dengan saringan kategori)
 - [x] Tahap 5: Tampilan rapi di HP
 - [x] Tahap 6: Deploy online
+- [x] Tahap 7: Kelola produk (halaman tambah, ubah, dan hapus produk untuk pemilik warung)
 
 ## Teknologi yang dipakai
 

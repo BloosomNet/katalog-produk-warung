@@ -279,6 +279,62 @@ h2 { margin: 0 0 12px; }
   cursor: pointer;
 }
 
+/* Halaman kelola produk: formulir tegak lurus dan baris daftar produk. */
+.formulir-kelola label {
+  display: block;
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+.formulir-kelola label:first-of-type { margin-top: 0; }
+
+.formulir-kelola input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+}
+
+.tombol-formulir {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.tombol-simpan {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #2e6b34;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.baris-kelola {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.baris-kelola:last-child { border-bottom: none; }
+.baris-kelola .harga-satuan { margin: 4px 0 0; color: #555; }
+
+.aksi-kelola {
+  display: flex;
+  gap: 8px;
+}
+
 /* Layar agak lebar: dua kartu berdampingan. */
 @media (min-width: 600px) {
   .grid-produk {
@@ -330,4 +386,12 @@ h2 { margin: 0 0 12px; }
   /* Total lebih besar biar langsung kelihatan, tombol kosongkan selebar kartu. */
   .total { font-size: 1.35em; }
   .tombol-kosongkan { width: 100%; }
+
+  /* Halaman kelola: baris produk ditumpuk, tombol simpan selebar kartu. */
+  .baris-kelola {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .aksi-kelola button { flex: 1; }
+  .tombol-simpan { width: 100%; }
 }

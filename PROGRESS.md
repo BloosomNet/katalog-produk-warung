@@ -230,6 +230,28 @@ Kekurangan saat ini (jujur):
 - Dua kendala ketemu pas deploy dan sudah diatasi: (1) repo ini awalnya belum termasuk cakupan Railway App di GitHub, jadi ditambahkan dulu ke instalasinya (sekarang 2 repo: kasir + katalog); (2) MySQL Railway secara bawaan hanya membuat database `railway`, jadi `MYSQL_DATABASE` di service MySQL diatur ke `katalog_warung` dan volumenya diinisialisasi ulang selagi masih kosong — sesudah itu tabel kebikin dan endpoint jalan.
 - Workspace Railway masih masa Trial.
 
+## Tahap 7 (selesai): Kelola produk
+
+Yang dibuat kali ini:
+- Endpoint baru di `/api/produk`: `GET /semua` (semua produk termasuk stok habis, khusus halaman kelola), `POST /` (tambah produk), `PUT /:id` (ubah), `DELETE /:id` (hapus). Isi formulir diperiksa dulu di server: nama wajib, harga harus angka bulat di atas 0, stok angka bulat 0 atau lebih — yang tidak sah dijawab 400, id yang tidak ada dijawab 404.
+- Halaman baru `kelola.html` + `js/kelola.js`: formulir tambah/ubah produk (nama, harga, stok, kategori) dan daftar semua produk dengan tombol Ubah dan Hapus (hapus meminta konfirmasi dulu). Produk stok habis tetap tampil di sini dengan catatan tidak tampil di katalog pelanggan.
+- Tautan "Kelola Produk" ditambahkan di kepala halaman katalog.
+- Model `Produk` ditambah fungsi kelola; komentar lama "katalog hanya membaca" diperbarui — halaman pelanggan tetap hanya membaca, pengelolaan produk sekarang resmi ada di halaman kelola.
+
+Cara kerja singkat:
+- Pemilik membuka `/kelola.html`, mengisi formulir, lalu halaman mengirim JSON ke endpoint di atas. Daftar kelola selalu dimuat ulang sesudah simpan/hapus, jadi yang tampil selalu data terbaru dari basis data.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server di port 3001):
+- POST produk sah 201; nama kosong 400; harga 0 400; stok negatif 400
+- `GET /api/produk/semua` mengembalikan semua produk termasuk yang stoknya 0, sementara `GET /api/produk` (pelanggan) tetap menyembunyikan stok 0
+- PUT mengubah harga dan stok 200; PUT dan DELETE ke id yang tidak ada 404; DELETE 200 dan produk hilang dari daftar
+- Halaman `/`, `/kelola.html`, `/keranjang.html`, `/detail.html`, `/js/kelola.js`, `/css/style.css` semua 200; tautan Kelola Produk ada di halaman utama; `/api/sehat` ok
+- Data uji dibersihkan, server dimatikan sesudah uji
+
+Kekurangan saat ini (jujur):
+- Halaman kelola BELUM dilindungi login — siapa pun yang tahu alamatnya bisa mengubah produk. Untuk demo portofolio ini diterima dulu; perlindungan login yang beneran ada di aplikasi kasir dan akan jadi satu di sistem gabungan nanti.
+- Demo online akan diisi produk contoh lewat halaman kelola ini sesudah deploy-nya jalan, supaya katalognya tidak kosong lagi.
+
 ## Tahap berikutnya
 
-Semua tahap katalog selesai (1–6). Project ini tinggal menunggu penggabungan besar: kasir + katalog + inventaris menjadi satu sistem manajemen UMKM (repo terpisah), sesuai rencana portofolio.
+Semua tahap katalog selesai (1–7). Project ini tinggal menunggu penggabungan besar: kasir + katalog + inventaris menjadi satu sistem manajemen UMKM (repo terpisah), sesuai rencana portofolio.

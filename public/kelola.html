@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Produk — Katalog Produk Warung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="wadah">
+    <p><a class="tautan-kembali" href="/">← Kembali ke katalog</a></p>
+    <h1>Kelola Produk</h1>
+    <p class="keterangan">Tambah, ubah, dan hapus produk di sini. Perubahan langsung tampil di katalog pelanggan.</p>
+
+    <div class="kartu">
+      <h2 id="judul-formulir">Tambah produk</h2>
+      <form id="formulir-produk" class="formulir-kelola">
+        <input type="hidden" id="produk-id">
+        <label for="produk-nama">Nama produk</label>
+        <input id="produk-nama" type="text" maxlength="100" required placeholder="Misal: Kopi Sachet">
+        <label for="produk-harga">Harga (Rp)</label>
+        <input id="produk-harga" type="number" min="1" step="1" required placeholder="Misal: 5000">
+        <label for="produk-stok">Stok</label>
+        <input id="produk-stok" type="number" min="0" step="1" required placeholder="Misal: 20">
+        <label for="produk-kategori">Kategori (boleh kosong)</label>
+        <input id="produk-kategori" type="text" maxlength="50" placeholder="Misal: Minuman">
+        <div class="tombol-formulir">
+          <button type="submit" class="tombol-simpan" id="tombol-simpan">Simpan produk</button>
+          <button type="button" class="tombol-kosongkan" id="tombol-batal" hidden>Batal mengubah</button>
+        </div>
+      </form>
+      <p id="pesan-formulir" class="pesan"></p>
+      <p id="info-formulir" class="info"></p>
+    </div>
+
+    <div class="kartu">
+      <h2>Semua produk</h2>
+      <p id="pesan-daftar" class="pesan"></p>
+      <div id="daftar-kelola"></div>
+      <p id="kelola-kosong" class="keterangan" hidden>Belum ada produk sama sekali. Tambahkan produk pertama lewat formulir di atas.</p>
+    </div>
+  </div>
+
+  <script src="/js/kelola.js"></script>
+</body>
+</html>

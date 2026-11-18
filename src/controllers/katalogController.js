@@ -45,4 +45,92 @@ function waNomor(req, res) {
   res.json({ nomor: mentah });
 }
 
-module.exports = { daftarProduk, detailProduk, waNomor };
+// Membersihkan dan memeriksa isi formulir produk dari halaman kelola.
+// Mengembalikan { produk } kalau sah, atau { galat } berisi pesan kesalahan.
+function periksaProduk(isi) {
+  const nama = typeof isi.nama === 'string' ? isi.nama.trim().slice(0, 100) : '';
+  if (!nama) {
+    return { galat: 'Nama produk wajib diisi' };
+  }
+  const harga = Number(isi.harga);
+  if (!Number.isInteger(harga) || harga <= 0) {
+    return { galat: 'Harga harus angka bulat lebih dari 0' };
+  }
+  const stok = Number(isi.stok);
+  if (!Number.isInteger(stok) || stok < 0) {
+    return { galat: 'Stok harus angka bulat 0 atau lebih' };
+  }
+  const kategori = typeof isi.kategori === 'string'
+    ? isi.kategori.trim().slice(0, 50)
+    : '';
+  return { produk: { nama, harga, stok, kategori } };
+}
+
+// GET /api/produk/semua — semua produk untuk halaman kelola,
+// termasuk yang stoknya habis.
+async function daftarKelola(req, res) {
+  try {
+    const produk = await Produk.semuaUntukKelola();
+    res.json({ produk });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ pesan: 'Gagal mengambil daftar produk' });
+  }
+}
+
+// POST /api/produk — menambah produk baru dari halaman kelola.
+async function tambahProduk(req, res) {
+  try {
+    const { produk, galat } = periksaProduk(req.body || {});
+    if (galat) {
+      return res.status(400).json({ pesan: galat });
+    }
+    const id = await Produk.tambahProduk(produk);
+    res.status(201).json({ id, ...produk });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ pesan: 'Gagal menambah produk' });
+  }
+}
+
+// PUT /api/produk/:id — mengubah produk dari halaman kelola.
+async function ubahProduk(req, res) {
+  try {
+    const { produk, galat } = periksaProduk(req.body || {});
+    if (galat) {
+      return res.status(400).json({ pesan: galat });
+    }
+    const berubah = await Produk.ubahProduk(req.params.id, produk);
+    if (!berubah) {
+      return res.status(404).json({ pesan: 'Produk tidak ditemukan' });
+    }
+    res.json({ id: Number(req.params.id), ...produk });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ pesan: 'Gagal mengubah produk' });
+  }
+}
+
+// DELETE /api/produk/:id — menghapus produk dari halaman kelola.
+async function hapusProduk(req, res) {
+  try {
+    const terhapus = await Produk.hapusProduk(req.params.id);
+    if (!terhapus) {
+      return res.status(404).json({ pesan: 'Produk tidak ditemukan' });
+    }
+    res.json({ pesan: 'Produk terhapus' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ pesan: 'Gagal menghapus produk' });
+  }
+}
+
+module.exports = {
+  daftarProduk,
+  detailProduk,
+  waNomor,
+  daftarKelola,
+  tambahProduk,
+  ubahProduk,
+  hapusProduk,
+};
